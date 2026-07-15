@@ -7,13 +7,23 @@ import json
 from collections.abc import AsyncIterator
 from typing import Any
 
+from app.config import settings
 from app.models.schemas import BorrowerRecord, RiskAssessment
+from app.observability import metrics
+from app.security.llm_guard import validate_llm_narration
 from app.services.explanation import _fallback_explanation, build_explanation_prompt
 from app.services.llm_client import llm_client
 from app.services.qa import _fallback_answer, build_qa_prompt
 
 CHUNK_DELAY_SECONDS = 0.018
 WORDS_PER_CHUNK = 2
+
+
+def _finalize_llm_text(text: str, assessment: RiskAssessment) -> str:
+    text = validate_llm_narration(text, assessment).strip()
+    if len(text) > settings.llm_max_response_chars:
+        text = text[: settings.llm_max_response_chars] + "\n\n…"
+    return text
 
 
 def _sse(event: str, payload: dict[str, Any]) -> str:
@@ -62,7 +72,9 @@ async def stream_explanation_events(
                 prompt,
                 metadata={"feature": "risk_explanation_stream", "borrower_id": borrower.borrower_id},
             )).strip()
+            text = _finalize_llm_text(text, assessment)
             llm_used = True
+            metrics.increment("llm_calls_total")
         except Exception as exc:
             text = _fallback_explanation(borrower, assessment)
             yield _sse("status", {"phase": "fallback", "message": f"LLM unavailable: {exc}"})
@@ -104,7 +116,9 @@ async def stream_qa_events(
                 prompt,
                 metadata={"feature": "analyst_qa_stream", "borrower_id": borrower.borrower_id},
             )).strip()
+            text = _finalize_llm_text(text, assessment)
             llm_used = True
+            metrics.increment("llm_calls_total")
         except Exception as exc:
             text = _fallback_answer(borrower, assessment, question)
             yield _sse("status", {"phase": "fallback", "message": f"LLM unavailable: {exc}"})

@@ -94,3 +94,30 @@ def test_auth_me(client: TestClient, auth):
     res = client.get("/api/auth/me", headers=auth("A001"))
     assert res.status_code == 200
     assert res.json()["user_id"] == "A001"
+
+
+def test_manager_sees_all_borrowers(client: TestClient, auth):
+    res = client.get("/api/alerts", headers=auth("M001"))
+    assert res.status_code == 200
+    ids = {row["borrower_id"] for row in res.json()}
+    assert "B101" in ids
+    assert "B104" in ids
+    assert "B110" in ids
+    assert len(ids) >= 10
+
+
+def test_manager_can_access_unassigned_borrower(client: TestClient, auth):
+    res = client.get("/api/borrowers/B104/assessment", headers=auth("M001"))
+    assert res.status_code == 200
+    assert res.json()["borrower_id"] == "B104"
+
+
+def test_manager_can_access_llm_explanation(client: TestClient, auth):
+    res = client.get("/api/borrowers/B110/explanation", headers=auth("M001"))
+    assert res.status_code == 200
+    assert res.json()["borrower_id"] == "B110"
+
+
+def test_unknown_borrower_returns_404(client: TestClient, auth):
+    res = client.get("/api/borrowers/B999/assessment", headers=auth("M001"))
+    assert res.status_code == 404

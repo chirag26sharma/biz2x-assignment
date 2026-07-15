@@ -87,7 +87,7 @@ export default function BorrowerSelfPage() {
         )}
 
         {updateText && (
-          <section className="panel">
+          <section className="panel" data-testid="borrower-self-view">
             <h2 style={{ marginTop: 0, fontSize: "1.15rem" }}>Your account update</h2>
             <LlmStreamOutput text={updateText} emptyLabel="No update available." />
             <p className="muted" style={{ fontSize: "0.8rem", marginTop: "0.65rem", marginBottom: 0 }}>

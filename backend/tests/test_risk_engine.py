@@ -52,3 +52,38 @@ def test_scenario_miss_next_emi_increases_score():
     baseline = assess_borrower(borrower, as_of=AS_OF)
     simulated = simulate_miss_next_emi(borrower, as_of=AS_OF)
     assert simulated.risk_score >= baseline.risk_score
+
+
+def test_b103_failed_autodebit_high_risk():
+    result = _assess("B103")
+    assert result.risk_category == RiskCategory.HIGH_RISK
+    codes = {s.code for s in result.signals}
+    assert "FAILED_AUTODEBIT_HIGH" in codes
+
+
+def test_b104_utilization_high_risk():
+    result = _assess("B104")
+    assert result.risk_category == RiskCategory.HIGH_RISK
+    codes = {s.code for s in result.signals}
+    assert "UTILIZATION_HIGH" in codes or "UTILIZATION_RISING" in codes
+
+
+def test_b105_balance_decline_high_risk():
+    result = _assess("B105")
+    assert result.risk_category == RiskCategory.HIGH_RISK
+    codes = {s.code for s in result.signals}
+    assert "BALANCE_DECLINE" in codes
+
+
+def test_b106_partial_or_skipped_high_risk():
+    result = _assess("B106")
+    assert result.risk_category == RiskCategory.HIGH_RISK
+    codes = {s.code for s in result.signals}
+    assert "PARTIAL_OR_SKIPPED" in codes
+
+
+def test_b107_balance_decline_high_risk():
+    result = _assess("B107")
+    assert result.risk_category == RiskCategory.HIGH_RISK
+    codes = {s.code for s in result.signals}
+    assert "BALANCE_DECLINE" in codes

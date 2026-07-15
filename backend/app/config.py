@@ -36,7 +36,10 @@ class Settings(BaseSettings):
     llm_timeout_seconds: float = 60.0
     llm_max_response_chars: int = 8000
 
-    cors_origins: str = "http://localhost:3000"
+    cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
+
+    # Demo dataset reference date (matches mock_dataset.json as_of_date)
+    demo_as_of_date: str = "2026-07-15"
 
     # Security / abuse controls
     qa_max_question_length: int = 500
@@ -48,6 +51,13 @@ class Settings(BaseSettings):
     @property
     def is_production(self) -> bool:
         return self.app_env.strip().lower() == "production"
+
+    @property
+    def effective_llm_rate_limit(self) -> int:
+        """Higher LLM quota in development to tolerate stream remounts and navigation."""
+        if self.is_production:
+            return self.rate_limit_llm_requests_per_minute
+        return max(self.rate_limit_llm_requests_per_minute, 60)
 
     # --- Risk engine assumptions (documented in README) ---
     # Minimum completed payment cycles required before full scoring.

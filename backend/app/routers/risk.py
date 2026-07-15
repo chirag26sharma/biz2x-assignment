@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Path, Query
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 from fastapi.responses import StreamingResponse
 
 from app.auth.audit import audit_event
@@ -34,6 +34,17 @@ from app.storage.factory import get_storage
 router = APIRouter(tags=["risk"])
 
 BorrowerId = Annotated[str, Path(pattern=r"^[A-Z][A-Z0-9_]{2,31}$")]
+
+
+def _resolve_as_of(as_of: date | None) -> date:
+    return as_of or date.fromisoformat(settings.demo_as_of_date)
+
+
+def _get_borrower_or_404(borrower_id: str) -> BorrowerRecord:
+    borrower = get_storage().get_borrower(borrower_id)
+    if borrower is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Borrower not found")
+    return borrower
 
 
 def _visible_borrowers(user: AuthUser) -> list[BorrowerRecord]:
@@ -69,7 +80,7 @@ def list_alerts(
     user: AuthUser = Depends(get_current_user),
     as_of: date | None = Query(default=None),
 ) -> list[AlertSummary]:
-    as_of = as_of or date.fromisoformat("2026-07-15")
+    as_of = _resolve_as_of(as_of)
     alerts = [
         _to_alert(b, assess_borrower(b, as_of=as_of))
         for b in _visible_borrowers(user)
@@ -86,10 +97,9 @@ def get_assessment(
     as_of: date | None = Query(default=None),
 ) -> RiskAssessment:
     assert_can_view_borrower(user, borrower_id)
-    borrower = get_storage().get_borrower(borrower_id)
-    assert borrower is not None
+    borrower = _get_borrower_or_404(borrower_id)
     audit_event(action="VIEW_ASSESSMENT", user=user, borrower_id=borrower_id)
-    return assess_borrower(borrower, as_of=as_of or date.fromisoformat("2026-07-15"))
+    return assess_borrower(borrower, as_of=_resolve_as_of(as_of))
 
 
 @router.get("/borrowers/{borrower_id}/profile")
@@ -98,8 +108,7 @@ def get_borrower_profile(
     user: AuthUser = Depends(get_current_user),
 ) -> dict:
     assert_can_view_borrower(user, borrower_id)
-    borrower = get_storage().get_borrower(borrower_id)
-    assert borrower is not None
+    borrower = _get_borrower_or_404(borrower_id)
     audit_event(action="VIEW_PROFILE", user=user, borrower_id=borrower_id)
     # Borrowers see a reduced explanation-oriented view (no analyst assignment internals)
     data = borrower.model_dump(mode="json")
@@ -118,9 +127,8 @@ def get_borrower_update(
 ) -> ExplanationResponse:
     """Deterministic plain-language update for borrowers — no LLM."""
     assert_can_view_borrower(user, borrower_id)
-    borrower = get_storage().get_borrower(borrower_id)
-    assert borrower is not None
-    assessment = assess_borrower(borrower, as_of=as_of or date.fromisoformat("2026-07-15"))
+    borrower = _get_borrower_or_404(borrower_id)
+    assessment = assess_borrower(borrower, as_of=_resolve_as_of(as_of))
     audit_event(action="BORROWER_UPDATE", user=user, borrower_id=borrower_id)
     return build_borrower_update_response(borrower, assessment)
 
@@ -132,9 +140,8 @@ async def get_explanation(
     as_of: date | None = Query(default=None),
 ) -> ExplanationResponse:
     assert_can_view_borrower(user, borrower_id)
-    borrower = get_storage().get_borrower(borrower_id)
-    assert borrower is not None
-    assessment = assess_borrower(borrower, as_of=as_of or date.fromisoformat("2026-07-15"))
+    borrower = _get_borrower_or_404(borrower_id)
+    assessment = assess_borrower(borrower, as_of=_resolve_as_of(as_of))
     audit_event(action="LLM_EXPLANATION", user=user, borrower_id=borrower_id)
     return await generate_explanation(borrower, assessment)
 
@@ -146,9 +153,8 @@ async def stream_explanation(
     as_of: date | None = Query(default=None),
 ) -> StreamingResponse:
     assert_can_view_borrower(user, borrower_id)
-    borrower = get_storage().get_borrower(borrower_id)
-    assert borrower is not None
-    assessment = assess_borrower(borrower, as_of=as_of or date.fromisoformat("2026-07-15"))
+    borrower = _get_borrower_or_404(borrower_id)
+    assessment = assess_borrower(borrower, as_of=_resolve_as_of(as_of))
     audit_event(action="LLM_EXPLANATION_STREAM", user=user, borrower_id=borrower_id)
 
     async def event_generator():
@@ -170,9 +176,8 @@ async def ask_question(
     as_of: date | None = Query(default=None),
 ) -> QAResponse:
     assert_can_view_borrower(user, borrower_id)
-    borrower = get_storage().get_borrower(borrower_id)
-    assert borrower is not None
-    assessment = assess_borrower(borrower, as_of=as_of or date.fromisoformat("2026-07-15"))
+    borrower = _get_borrower_or_404(borrower_id)
+    assessment = assess_borrower(borrower, as_of=_resolve_as_of(as_of))
     audit_event(action="ANALYST_QA", user=user, borrower_id=borrower_id)
     return await answer_question(borrower, assessment, body.question)
 
@@ -185,9 +190,8 @@ async def stream_question(
     as_of: date | None = Query(default=None),
 ) -> StreamingResponse:
     assert_can_view_borrower(user, borrower_id)
-    borrower = get_storage().get_borrower(borrower_id)
-    assert borrower is not None
-    assessment = assess_borrower(borrower, as_of=as_of or date.fromisoformat("2026-07-15"))
+    borrower = _get_borrower_or_404(borrower_id)
+    assessment = assess_borrower(borrower, as_of=_resolve_as_of(as_of))
     audit_event(action="ANALYST_QA_STREAM", user=user, borrower_id=borrower_id)
 
     async def event_generator():
@@ -209,10 +213,9 @@ def run_scenario(
     as_of: date | None = Query(default=None),
 ) -> RiskAssessment:
     assert_can_view_borrower(user, borrower_id)
-    borrower = get_storage().get_borrower(borrower_id)
-    assert borrower is not None
+    borrower = _get_borrower_or_404(borrower_id)
     audit_event(action="SCENARIO_SIMULATION", user=user, borrower_id=borrower_id)
-    as_of_date = as_of or date.fromisoformat("2026-07-15")
+    as_of_date = _resolve_as_of(as_of)
     if body.miss_next_emi:
         return simulate_miss_next_emi(borrower, as_of=as_of_date)
     return assess_borrower(borrower, as_of=as_of_date)
@@ -223,7 +226,7 @@ def portfolio_summary(
     user: AuthUser = Depends(get_current_user),
     as_of: date | None = Query(default=None),
 ) -> PortfolioSummary:
-    as_of = as_of or date.fromisoformat("2026-07-15")
+    as_of = _resolve_as_of(as_of)
     borrowers = _visible_borrowers(user)
     by_category: dict[str, int] = {}
     by_severity: dict[str, int] = {}
@@ -261,7 +264,7 @@ def public_config() -> dict:
             "high_min": settings.score_high_min,
             "critical_min": settings.score_critical_min,
         },
-        "as_of_default": "2026-07-15",
+        "as_of_default": settings.demo_as_of_date,
         "llm_configured": bool(settings.llm_api_token),
         "api_version": "1.3",
     }

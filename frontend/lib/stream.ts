@@ -31,6 +31,41 @@ async function emitTextChunks(text: string, handlers: StreamHandlers): Promise<v
   }
 }
 
+async function sleep(ms: number): Promise<void> {
+  await new Promise((r) => setTimeout(r, ms));
+}
+
+function httpError(
+  status: number,
+  detail: string,
+  retryAfter?: number,
+): Error & { status?: number; retryAfter?: number } {
+  const err = new Error(detail) as Error & { status?: number; retryAfter?: number };
+  err.status = status;
+  err.retryAfter = retryAfter;
+  return err;
+}
+
+async function parseErrorResponse(res: Response): Promise<Error & { status?: number; retryAfter?: number }> {
+  let detail = res.statusText;
+  let retryAfter: number | undefined;
+  try {
+    const body = (await res.json()) as { detail?: string | { detail?: string }; retry_after_seconds?: number };
+    if (typeof body.detail === "string") detail = body.detail;
+    else if (body.detail && typeof body.detail === "object" && "detail" in body.detail) {
+      detail = String(body.detail.detail ?? detail);
+    }
+    const headerRetry = Number(res.headers.get("Retry-After"));
+    const headerRetrySec =
+      !Number.isNaN(headerRetry) && headerRetry > 0 ? headerRetry : undefined;
+    retryAfter = body.retry_after_seconds ?? headerRetrySec;
+  } catch {
+    const headerRetry = Number(res.headers.get("Retry-After"));
+    if (!Number.isNaN(headerRetry) && headerRetry > 0) retryAfter = headerRetry;
+  }
+  return httpError(res.status, typeof detail === "string" ? detail : JSON.stringify(detail), retryAfter);
+}
+
 export async function consumeSseStream(
   path: string,
   token: string,
@@ -50,16 +85,7 @@ export async function consumeSseStream(
   });
 
   if (!res.ok) {
-    let detail = res.statusText;
-    try {
-      const body = await res.json();
-      detail = body.detail ?? JSON.stringify(body);
-    } catch {
-      /* ignore */
-    }
-    const err = new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
-    (err as Error & { status?: number }).status = res.status;
-    throw err;
+    throw await parseErrorResponse(res);
   }
 
   const reader = res.body?.getReader();
@@ -107,6 +133,69 @@ export async function consumeSseStream(
   }
 }
 
+async function fallbackExplanation(
+  token: string,
+  borrowerId: string,
+  handlers: StreamHandlers,
+): Promise<void> {
+  const { getExplanation } = await import("./api");
+  handlers.onStatus?.({ phase: "fallback", message: "Using standard explanation endpoint…" });
+  const res = await getExplanation(token, borrowerId);
+  await emitTextChunks(res.explanation, handlers);
+  handlers.onDone?.({ llm_used: res.llm_used, full_text: res.explanation, grounded: true });
+}
+
+async function fallbackQuestion(
+  token: string,
+  borrowerId: string,
+  question: string,
+  handlers: StreamHandlers,
+): Promise<void> {
+  const { askQuestion } = await import("./api");
+  handlers.onStatus?.({ phase: "fallback", message: "Using standard Q&A endpoint…" });
+  const res = await askQuestion(token, borrowerId, question);
+  await emitTextChunks(res.answer, handlers);
+  handlers.onDone?.({ llm_used: res.llm_used ?? false, full_text: res.answer, grounded: true });
+}
+
+async function withStreamFallback<T extends () => Promise<void>>(
+  run: T,
+  fallback: () => Promise<void>,
+  handlers: StreamHandlers,
+): Promise<void> {
+  try {
+    await run();
+  } catch (e) {
+    const err = e as Error & { status?: number; retryAfter?: number };
+    if (err.status === 429) {
+      const waitSec = err.retryAfter ?? 2;
+      handlers.onStatus?.({ phase: "retry", message: `Rate limited — retrying in ${waitSec}s…` });
+      await sleep(waitSec * 1000);
+      try {
+        await run();
+        return;
+      } catch (retryErr) {
+        const retry = retryErr as Error & { status?: number };
+        if (retry.status === 404 || /not found/i.test(retry.message)) {
+          await fallback();
+          return;
+        }
+        if (retry.status === 429) {
+          handlers.onStatus?.({ phase: "fallback", message: "Still rate limited — using non-stream endpoint…" });
+          await fallback();
+          return;
+        }
+        throw retryErr;
+      }
+    }
+    if (err.status === 404 || /not found/i.test(err.message)) {
+      await fallback();
+      return;
+    }
+    throw e;
+  }
+}
+
 export async function streamExplanation(
   token: string,
   borrowerId: string,
@@ -114,25 +203,9 @@ export async function streamExplanation(
   signal?: AbortSignal,
 ) {
   handlers.onStatus?.({ phase: "started", message: "Connecting…" });
-  try {
-    await consumeSseStream(
-      `/api/borrowers/${borrowerId}/explanation/stream`,
-      token,
-      handlers,
-      { signal },
-    );
-  } catch (e) {
-    const err = e as Error & { status?: number };
-    if (err.status === 404 || /not found/i.test(err.message)) {
-      const { getExplanation } = await import("./api");
-      handlers.onStatus?.({ phase: "fallback", message: "Using standard explanation endpoint…" });
-      const res = await getExplanation(token, borrowerId);
-      await emitTextChunks(res.explanation, handlers);
-      handlers.onDone?.({ llm_used: res.llm_used, full_text: res.explanation, grounded: true });
-      return;
-    }
-    throw e;
-  }
+  const run = () =>
+    consumeSseStream(`/api/borrowers/${borrowerId}/explanation/stream`, token, handlers, { signal });
+  await withStreamFallback(run, () => fallbackExplanation(token, borrowerId, handlers), handlers);
 }
 
 export async function streamQuestion(
@@ -143,23 +216,16 @@ export async function streamQuestion(
   signal?: AbortSignal,
 ) {
   handlers.onStatus?.({ phase: "started", message: "Sending question…" });
-  try {
-    await consumeSseStream(
-      `/api/borrowers/${borrowerId}/qa/stream`,
-      token,
-      handlers,
-      { method: "POST", body: { question }, signal },
-    );
-  } catch (e) {
-    const err = e as Error & { status?: number };
-    if (err.status === 404 || /not found/i.test(err.message)) {
-      const { askQuestion } = await import("./api");
-      handlers.onStatus?.({ phase: "fallback", message: "Using standard Q&A endpoint…" });
-      const res = await askQuestion(token, borrowerId, question);
-      await emitTextChunks(res.answer, handlers);
-      handlers.onDone?.({ llm_used: res.llm_used ?? false, full_text: res.answer, grounded: true });
-      return;
-    }
-    throw e;
-  }
+  const run = () =>
+    consumeSseStream(`/api/borrowers/${borrowerId}/qa/stream`, token, handlers, {
+      method: "POST",
+      body: { question },
+      signal,
+    });
+  await withStreamFallback(
+    run,
+    () => fallbackQuestion(token, borrowerId, question, handlers),
+    handlers,
+  );
 }
+

@@ -5,12 +5,16 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { ExplanationStreamPanel } from "@/components/ExplanationStreamPanel";
+import { DpdTrendChart } from "@/components/DpdTrendChart";
+import { PaymentHistoryTable } from "@/components/PaymentHistoryTable";
 import { LlmStreamOutput } from "@/components/LlmStreamOutput";
 import {
   formatINR,
   getAssessment,
   getProfile,
+  getPublicConfig,
   runScenario,
+  type BorrowerProfile,
   type RiskAssessment,
 } from "@/lib/api";
 import { streamQuestion } from "@/lib/stream";
@@ -24,7 +28,7 @@ export default function BorrowerDetailPage() {
 
   const [assessment, setAssessment] = useState<RiskAssessment | null>(null);
   const [scenario, setScenario] = useState<RiskAssessment | null>(null);
-  const [profile, setProfile] = useState<Record<string, unknown> | null>(null);
+  const [profile, setProfile] = useState<BorrowerProfile | null>(null);
   const [question, setQuestion] = useState("Why was this borrower flagged?");
   const [answerText, setAnswerText] = useState("");
   const [answerStatus, setAnswerStatus] = useState<string | null>(null);
@@ -134,9 +138,10 @@ export default function BorrowerDetailPage() {
   if (!session || session.user.role === "borrower") return null;
   if (!borrowerId) return <main className="shell"><p className="panel muted">Invalid borrower.</p></main>;
 
-  const loan = profile?.loan as
-    | { outstanding_balance?: number; emi_amount?: number; next_due_date?: string }
-    | undefined;
+  const loan = profile?.loan;
+
+  const payments = profile?.payments ?? [];
+  const balanceHistory = profile?.balance_history ?? [];
 
   return (
     <main className="shell fade-in">
@@ -179,7 +184,7 @@ export default function BorrowerDetailPage() {
         )}
 
         {assessment && (
-          <section className="panel">
+          <section className="panel" data-testid="borrower-assessment">
             <div className="row" style={{ justifyContent: "space-between" }}>
               <div className="row">
                 <span className={`badge ${categoryClass(assessment.risk_category)}`}>
@@ -312,49 +317,26 @@ export default function BorrowerDetailPage() {
           )}
         </section>
 
+        {assessment && payments.length > 0 && (
+          <section className="panel">
+            <div className="row" style={{ justifyContent: "space-between", marginBottom: "0.5rem" }}>
+              <h2 style={{ margin: 0, fontSize: "1.15rem" }}>Repayment trend</h2>
+              <span className="muted" style={{ fontSize: "0.8rem" }}>Last {Math.min(payments.length, 6)} EMI cycles</span>
+            </div>
+            <DpdTrendChart payments={payments} />
+          </section>
+        )}
+
         <section className="panel">
-          <h2 style={{ marginTop: 0, fontSize: "1.15rem" }}>Payment / utilization snapshot</h2>
+          <h2 style={{ marginTop: 0, fontSize: "1.15rem" }}>Payment history & utilization</h2>
           {profileLoading && <p className="muted">Loading payment data…</p>}
           {profileError && !profile && (
             <p className="muted" style={{ color: "var(--critical)" }}>
               Payment data unavailable: {profileError}
             </p>
           )}
-          {profile && assessment && (
-            <pre
-              className="mono"
-              style={{
-                margin: 0,
-                whiteSpace: "pre-wrap",
-                fontSize: "0.78rem",
-                maxHeight: 280,
-                overflow: "auto",
-                color: "var(--muted)",
-              }}
-            >
-              {JSON.stringify(
-                {
-                  scenario_tag: profile.scenario_tag,
-                  indicators: assessment.indicators,
-                  payments: profile.payments,
-                  balance_history: profile.balance_history,
-                },
-                null,
-                2,
-              )}
-            </pre>
-          )}
-          {profile && !assessment && (
-            <pre className="mono" style={{ margin: 0, whiteSpace: "pre-wrap", fontSize: "0.78rem", color: "var(--muted)" }}>
-              {JSON.stringify(
-                {
-                  payments: profile.payments,
-                  balance_history: profile.balance_history,
-                },
-                null,
-                2,
-              )}
-            </pre>
+          {profile && (
+            <PaymentHistoryTable payments={payments} balanceHistory={balanceHistory} />
           )}
         </section>
       </div>

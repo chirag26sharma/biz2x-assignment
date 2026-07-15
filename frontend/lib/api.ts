@@ -64,6 +64,52 @@ export type PortfolioSummary = {
   high_risk_count: number;
 };
 
+export type LoanProfile = {
+  loan_id: string;
+  loan_amount: number;
+  emi_amount: number;
+  outstanding_balance: number;
+  credit_limit: number;
+  next_due_date: string;
+  product?: string;
+};
+
+export type PaymentProfile = {
+  due_date: string;
+  due_amount: number;
+  paid_amount: number;
+  paid_date?: string | null;
+  days_past_due: number;
+  status: string;
+  channel?: string;
+  auto_debit_failed?: boolean;
+};
+
+export type BalanceSnapshot = {
+  date: string;
+  account_balance: number;
+  credit_limit: number;
+  outstanding_balance: number;
+};
+
+export type BorrowerProfile = {
+  borrower_id: string;
+  name: string;
+  assigned_analyst_id?: string | null;
+  loan: LoanProfile;
+  payments: PaymentProfile[];
+  balance_history: BalanceSnapshot[];
+  scenario_tag?: string;
+  notes?: string;
+};
+
+export type PublicConfig = {
+  as_of_default: string;
+  delinquency_horizon_days: number;
+  llm_configured: boolean;
+  api_version: string;
+};
+
 export type Session = {
   user: AuthUser;
   token: string;
@@ -135,9 +181,13 @@ export function getExplanation(token: string, borrowerId: string) {
 }
 
 export function getProfile(token: string, borrowerId: string) {
-  return api<Record<string, unknown>>(`/api/borrowers/${borrowerId}/profile`, {
+  return api<BorrowerProfile>(`/api/borrowers/${borrowerId}/profile`, {
     token,
   });
+}
+
+export function getPublicConfig() {
+  return api<PublicConfig>("/api/config/public");
 }
 
 export function askQuestion(token: string, borrowerId: string, question: string) {

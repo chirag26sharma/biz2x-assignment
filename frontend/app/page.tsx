@@ -3,7 +3,24 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
-import { listUsers, login, type AuthUser } from "@/lib/api";
+import { listUsers, login, type AuthUser, type UserRole } from "@/lib/api";
+
+function resolvePostLoginPath(role: UserRole): string {
+  const next =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("next")
+      : null;
+  if (next && next.startsWith("/") && !next.startsWith("//")) {
+    if (role === "borrower" && (next.startsWith("/dashboard") || next.startsWith("/borrowers"))) {
+      return "/borrower";
+    }
+    if (role !== "borrower" && next === "/borrower") {
+      return "/dashboard";
+    }
+    return next;
+  }
+  return role === "borrower" ? "/borrower" : "/dashboard";
+}
 
 export default function HomePage() {
   const { session, setSession, ready } = useAuth();
@@ -15,7 +32,7 @@ export default function HomePage() {
   useEffect(() => {
     if (!ready) return;
     if (session) {
-      router.replace(session.user.role === "borrower" ? "/borrower" : "/dashboard");
+      router.replace(resolvePostLoginPath(session.user.role));
       return;
     }
     listUsers()
@@ -32,7 +49,7 @@ export default function HomePage() {
         token,
         expiresAt: Date.now() + expires_in * 1000,
       });
-      router.push(verified.role === "borrower" ? "/borrower" : "/dashboard");
+      router.push(resolvePostLoginPath(verified.role));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Login failed");
     }
@@ -73,7 +90,13 @@ export default function HomePage() {
             <h2 style={{ fontSize: "1.1rem", marginBottom: "0.65rem" }}>Credit / collections</h2>
             <div className="login-grid">
               {analysts.map((u) => (
-                <button key={u.user_id} type="button" className="login-card" onClick={() => signIn(u)}>
+                <button
+                  key={u.user_id}
+                  type="button"
+                  className="login-card"
+                  data-testid={`login-${u.user_id}`}
+                  onClick={() => signIn(u)}
+                >
                   <div style={{ fontWeight: 700 }}>{u.name}</div>
                   <div className="muted mono">
                     {u.user_id} · {u.role}
@@ -86,7 +109,13 @@ export default function HomePage() {
             <h2 style={{ fontSize: "1.1rem", marginBottom: "0.65rem" }}>Borrowers</h2>
             <div className="login-grid">
               {borrowers.map((u) => (
-                <button key={u.user_id} type="button" className="login-card" onClick={() => signIn(u)}>
+                <button
+                  key={u.user_id}
+                  type="button"
+                  className="login-card"
+                  data-testid={`login-${u.user_id}`}
+                  onClick={() => signIn(u)}
+                >
                   <div style={{ fontWeight: 700 }}>{u.name}</div>
                   <div className="muted mono">
                     {u.user_id} · borrower {u.borrower_id}

@@ -1,5 +1,7 @@
 # Loan Default Risk Early Warning System
 
+> **How to run:** see [../GETTING_STARTED.md](../GETTING_STARTED.md) in the repo root.
+
 Biz2X SSE case study prototype: detect borrowers likely to become delinquent within **30 days**, surface explainable alerts, and ground analyst Q&A in borrower data only.
 
 ## Stack

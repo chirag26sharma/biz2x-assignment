@@ -7,6 +7,7 @@ import { useAuth } from "@/components/AuthProvider";
 import {
   formatINR,
   getPortfolio,
+  getPublicConfig,
   listAlerts,
   type AlertSummary,
   type PortfolioSummary,
@@ -18,6 +19,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [alerts, setAlerts] = useState<AlertSummary[]>([]);
   const [portfolio, setPortfolio] = useState<PortfolioSummary | null>(null);
+  const [asOfDate, setAsOfDate] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -31,10 +33,15 @@ export default function DashboardPage() {
       return;
     }
 
-    Promise.all([listAlerts(session.token), getPortfolio(session.token)])
-      .then(([a, p]) => {
+    Promise.all([
+      listAlerts(session.token),
+      getPortfolio(session.token),
+      getPublicConfig(),
+    ])
+      .then(([a, p, config]) => {
         setAlerts(a);
         setPortfolio(p);
+        setAsOfDate(config.as_of_default);
       })
       .catch((e: Error) => setError(e.message));
   }, [ready, session, router]);
@@ -92,10 +99,10 @@ export default function DashboardPage() {
         <div className="row" style={{ justifyContent: "space-between", marginBottom: "0.75rem" }}>
           <h1 style={{ margin: 0, fontSize: "1.35rem" }}>Borrowers by risk severity</h1>
           <span className="muted" style={{ fontSize: "0.85rem" }}>
-            As of 2026-07-15 · deterministic scoring
+            As of {asOfDate ?? "…"} · deterministic scoring
           </span>
         </div>
-        <div className="table-wrap">
+        <div className="table-wrap" data-testid="alerts-table">
           <table className="table">
             <thead>
               <tr>

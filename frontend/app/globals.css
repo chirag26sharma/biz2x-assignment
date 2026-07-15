@@ -200,6 +200,136 @@ a {
   background: color-mix(in srgb, var(--accent-soft) 45%, transparent);
 }
 
+/* --- DPD trend chart (production SVG) --- */
+.dpd-chart-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dpd-chart-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+}
+
+.dpd-chart-latest {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.2rem;
+}
+
+.dpd-chart-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.dpd-pill {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  font-family: var(--font-source-sans), sans-serif;
+}
+
+.dpd-pill-low { background: var(--low-bg); color: var(--low); }
+.dpd-pill-medium { background: var(--medium-bg); color: var(--medium); }
+.dpd-pill-high { background: var(--high-bg); color: var(--high); }
+.dpd-pill-critical { background: var(--critical-bg); color: var(--critical); }
+
+.dpd-trend-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+}
+
+.dpd-trend-badge.worsening { background: var(--critical-bg); color: var(--critical); }
+.dpd-trend-badge.improving { background: var(--low-bg); color: var(--low); }
+.dpd-trend-badge.stable { background: var(--info-bg); color: var(--info); }
+
+.dpd-chart-svg-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--bg-elevated) 0%, color-mix(in srgb, var(--bg) 60%, var(--bg-elevated)) 100%);
+  padding: 0.35rem 0.25rem 0;
+}
+
+.dpd-chart-svg {
+  display: block;
+  width: 100%;
+  min-width: 480px;
+  height: auto;
+}
+
+.dpd-axis-label {
+  font-size: 11px;
+  fill: var(--muted);
+  font-family: var(--font-source-sans), sans-serif;
+}
+
+.dpd-axis-title {
+  font-size: 10px;
+  fill: var(--muted);
+  font-family: var(--font-source-sans), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dpd-point-label {
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--ink);
+  font-family: var(--font-source-sans), sans-serif;
+}
+
+.dpd-ref-label {
+  font-size: 9px;
+  fill: var(--muted);
+  font-family: var(--font-source-sans), sans-serif;
+}
+
+.dpd-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.25rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.dpd-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dpd-legend-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.dpd-legend-dot.low { background: var(--low); }
+.dpd-legend-dot.medium { background: var(--medium); }
+.dpd-legend-dot.high { background: var(--high); }
+.dpd-legend-dot.critical { background: var(--critical); }
+
+.table tbody tr[style*="cursor: default"]:hover {
+  background: transparent;
+  cursor: default;
+}
+
 .muted {
   color: var(--muted);
 }

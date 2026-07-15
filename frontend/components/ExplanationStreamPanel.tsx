@@ -50,7 +50,11 @@ export function ExplanationStreamPanel({
       },
     }, ac.signal).catch((e: Error) => {
       if (e.name !== "AbortError") {
-        setError(e.message);
+        const msg =
+          /rate limit/i.test(e.message)
+            ? "Explanation is temporarily rate-limited. Wait a moment and click Regenerate."
+            : e.message || "Failed to load explanation.";
+        setError(msg);
         setStreaming(false);
         setStatus(null);
       }
@@ -60,7 +64,9 @@ export function ExplanationStreamPanel({
   useEffect(() => {
     start();
     return () => abortRef.current?.abort();
-  }, [start]);
+    // Only restart when auth or borrower changes — avoids duplicate streams from callback churn.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, borrowerId]);
 
   return (
     <section className="panel">
