@@ -1,0 +1,51 @@
+# llm-wrapper — cURL quickstart (3 examples)
+
+**URL:** `https://llm-wrapper-741152993481.asia-south1.run.app`  
+**Auth:** `Authorization: Bearer <api_token>`
+
+---
+
+## 1. Simple text prompt
+
+```bash
+curl -sS -X POST "https://llm-wrapper-741152993481.asia-south1.run.app/llm/query" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -d '{"prompt":"Hello. Reply in one short sentence."}'
+```
+
+---
+
+## 2. Prompt + base64 PDF or image
+
+Raw base64 only (no `data:...;base64,` prefix).
+
+**PDF**
+
+```bash
+curl -sS -X POST "https://llm-wrapper-741152993481.asia-south1.run.app/llm/query" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -d '{"prompt":"Summarize this document.","pdfBase64":"<BASE64_PDF>"}'
+```
+
+**Image** — same endpoint; body:
+
+`{"prompt":"What is in this image?","imageBase64":"<BASE64_IMAGE>","imageMediaType":"image/png"}`
+
+(`imageMediaType`: `image/jpeg` | `image/png` | `image/gif` | `image/webp`)
+
+---
+
+## 3. Prompt with metadata
+
+```bash
+curl -sS -X POST "https://llm-wrapper-741152993481.asia-south1.run.app/llm/query" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -d '{"prompt":"Hello","metadata":{"client":"postman","traceId":"550e8400-e29b-41d4-a716-446655440000"}}'
+```
+
+---
+
+

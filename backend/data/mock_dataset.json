@@ -1,0 +1,421 @@
+{
+  "as_of_date": "2026-07-15",
+  "users": [
+    {
+      "user_id": "A001",
+      "name": "Anita Sharma",
+      "role": "analyst",
+      "borrower_id": null
+    },
+    {
+      "user_id": "A002",
+      "name": "Rahul Mehta",
+      "role": "analyst",
+      "borrower_id": null
+    },
+    {
+      "user_id": "M001",
+      "name": "Priya Kapoor",
+      "role": "manager",
+      "borrower_id": null
+    },
+    {
+      "user_id": "U_B101",
+      "name": "Vikram Patel",
+      "role": "borrower",
+      "borrower_id": "B101"
+    },
+    {
+      "user_id": "U_B102",
+      "name": "Sneha Reddy",
+      "role": "borrower",
+      "borrower_id": "B102"
+    },
+    {
+      "user_id": "U_B103",
+      "name": "Arjun Nair",
+      "role": "borrower",
+      "borrower_id": "B103"
+    },
+    {
+      "user_id": "U_B104",
+      "name": "Meera Iyer",
+      "role": "borrower",
+      "borrower_id": "B104"
+    },
+    {
+      "user_id": "U_B105",
+      "name": "Karan Desai",
+      "role": "borrower",
+      "borrower_id": "B105"
+    },
+    {
+      "user_id": "U_B106",
+      "name": "Divya Joshi",
+      "role": "borrower",
+      "borrower_id": "B106"
+    },
+    {
+      "user_id": "U_B107",
+      "name": "Rohit Verma",
+      "role": "borrower",
+      "borrower_id": "B107"
+    },
+    {
+      "user_id": "U_B108",
+      "name": "Ananya Gupta",
+      "role": "borrower",
+      "borrower_id": "B108"
+    },
+    {
+      "user_id": "U_B109",
+      "name": "Siddharth Rao",
+      "role": "borrower",
+      "borrower_id": "B109"
+    },
+    {
+      "user_id": "U_B110",
+      "name": "Pooja Malhotra",
+      "role": "borrower",
+      "borrower_id": "B110"
+    }
+  ],
+  "borrowers": [
+    {
+      "borrower_id": "B101",
+      "name": "Vikram Patel",
+      "assigned_analyst_id": "A001",
+      "scenario_tag": "healthy_low_risk",
+      "notes": "On-time payments, stable income, healthy utilization — baseline Low.",
+      "loan": {
+        "loan_id": "L101",
+        "loan_amount": 500000,
+        "emi_amount": 18500,
+        "outstanding_balance": 320000,
+        "credit_limit": 500000,
+        "next_due_date": "2026-08-01",
+        "product": "term_loan"
+      },
+      "payments": [
+        {"due_date": "2026-02-01", "due_amount": 18500, "paid_amount": 18500, "paid_date": "2026-01-31", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-03-01", "due_amount": 18500, "paid_amount": 18500, "paid_date": "2026-03-01", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-04-01", "due_amount": 18500, "paid_amount": 18500, "paid_date": "2026-04-01", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-05-01", "due_amount": 18500, "paid_amount": 18500, "paid_date": "2026-04-30", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-06-01", "due_amount": 18500, "paid_amount": 18500, "paid_date": "2026-06-01", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-07-01", "due_amount": 18500, "paid_amount": 18500, "paid_date": "2026-07-01", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false}
+      ],
+      "transactions": [
+        {"date": "2026-04-05", "amount": 85000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-05-05", "amount": 85000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-06-05", "amount": 85000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-07-05", "amount": 85000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-07-10", "amount": 12000, "type": "debit", "category": "expense", "description": "Living expenses"}
+      ],
+      "balance_history": [
+        {"date": "2026-05-01", "account_balance": 95000, "credit_limit": 500000, "outstanding_balance": 357000},
+        {"date": "2026-06-01", "account_balance": 98000, "credit_limit": 500000, "outstanding_balance": 338500},
+        {"date": "2026-07-01", "account_balance": 102000, "credit_limit": 500000, "outstanding_balance": 320000}
+      ]
+    },
+    {
+      "borrower_id": "B102",
+      "name": "Sneha Reddy",
+      "assigned_analyst_id": "A001",
+      "scenario_tag": "rising_dpd_trend",
+      "notes": "Days-past-due trending upward across recent EMIs — Watchlist/High.",
+      "loan": {
+        "loan_id": "L102",
+        "loan_amount": 400000,
+        "emi_amount": 15000,
+        "outstanding_balance": 280000,
+        "credit_limit": 400000,
+        "next_due_date": "2026-08-05",
+        "product": "term_loan"
+      },
+      "payments": [
+        {"due_date": "2026-02-05", "due_amount": 15000, "paid_amount": 15000, "paid_date": "2026-02-05", "days_past_due": 0, "status": "on_time", "channel": "manual", "auto_debit_failed": false},
+        {"due_date": "2026-03-05", "due_amount": 15000, "paid_amount": 15000, "paid_date": "2026-03-07", "days_past_due": 2, "status": "late", "channel": "manual", "auto_debit_failed": false},
+        {"due_date": "2026-04-05", "due_amount": 15000, "paid_amount": 15000, "paid_date": "2026-04-08", "days_past_due": 3, "status": "late", "channel": "manual", "auto_debit_failed": false},
+        {"due_date": "2026-05-05", "due_amount": 15000, "paid_amount": 15000, "paid_date": "2026-05-12", "days_past_due": 7, "status": "late", "channel": "manual", "auto_debit_failed": false},
+        {"due_date": "2026-06-05", "due_amount": 15000, "paid_amount": 15000, "paid_date": "2026-06-17", "days_past_due": 12, "status": "late", "channel": "manual", "auto_debit_failed": false},
+        {"due_date": "2026-07-05", "due_amount": 15000, "paid_amount": 15000, "paid_date": "2026-07-23", "days_past_due": 18, "status": "late", "channel": "manual", "auto_debit_failed": false}
+      ],
+      "transactions": [
+        {"date": "2026-04-28", "amount": 55000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-05-28", "amount": 55000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-06-28", "amount": 52000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-07-10", "amount": 8000, "type": "debit", "category": "expense", "description": "Utilities"}
+      ],
+      "balance_history": [
+        {"date": "2026-05-05", "account_balance": 42000, "credit_limit": 400000, "outstanding_balance": 310000},
+        {"date": "2026-06-05", "account_balance": 38000, "credit_limit": 400000, "outstanding_balance": 295000},
+        {"date": "2026-07-05", "account_balance": 35000, "credit_limit": 400000, "outstanding_balance": 280000}
+      ]
+    },
+    {
+      "borrower_id": "B103",
+      "name": "Arjun Nair",
+      "assigned_analyst_id": "A001",
+      "scenario_tag": "frequent_failed_autodebits",
+      "notes": "Multiple failed auto-debit attempts in recent lookback window.",
+      "loan": {
+        "loan_id": "L103",
+        "loan_amount": 350000,
+        "emi_amount": 12500,
+        "outstanding_balance": 210000,
+        "credit_limit": 350000,
+        "next_due_date": "2026-08-10",
+        "product": "term_loan"
+      },
+      "payments": [
+        {"due_date": "2026-02-10", "due_amount": 12500, "paid_amount": 12500, "paid_date": "2026-02-10", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-03-10", "due_amount": 12500, "paid_amount": 12500, "paid_date": "2026-03-12", "days_past_due": 2, "status": "late", "channel": "manual", "auto_debit_failed": true},
+        {"due_date": "2026-04-10", "due_amount": 12500, "paid_amount": 12500, "paid_date": "2026-04-10", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-05-20", "due_amount": 12500, "paid_amount": 12500, "paid_date": "2026-05-25", "days_past_due": 5, "status": "late", "channel": "manual", "auto_debit_failed": true},
+        {"due_date": "2026-06-10", "due_amount": 12500, "paid_amount": 12500, "paid_date": "2026-06-18", "days_past_due": 8, "status": "late", "channel": "manual", "auto_debit_failed": true},
+        {"due_date": "2026-07-10", "due_amount": 12500, "paid_amount": 12500, "paid_date": "2026-07-20", "days_past_due": 10, "status": "late", "channel": "manual", "auto_debit_failed": true}
+      ],
+      "transactions": [
+        {"date": "2026-05-01", "amount": 48000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-06-01", "amount": 48000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-07-01", "amount": 48000, "type": "credit", "category": "income", "description": "Salary"}
+      ],
+      "balance_history": [
+        {"date": "2026-05-10", "account_balance": 18000, "credit_limit": 350000, "outstanding_balance": 235000},
+        {"date": "2026-06-10", "account_balance": 16500, "credit_limit": 350000, "outstanding_balance": 222500},
+        {"date": "2026-07-10", "account_balance": 15000, "credit_limit": 350000, "outstanding_balance": 210000}
+      ]
+    },
+    {
+      "borrower_id": "B104",
+      "name": "Meera Iyer",
+      "assigned_analyst_id": "A002",
+      "scenario_tag": "rising_utilization",
+      "notes": "Credit utilization rising sharply and currently elevated.",
+      "loan": {
+        "loan_id": "L104",
+        "loan_amount": 600000,
+        "emi_amount": 22000,
+        "outstanding_balance": 540000,
+        "credit_limit": 600000,
+        "next_due_date": "2026-08-03",
+        "product": "term_loan"
+      },
+      "payments": [
+        {"due_date": "2026-02-03", "due_amount": 22000, "paid_amount": 22000, "paid_date": "2026-02-03", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-03-03", "due_amount": 22000, "paid_amount": 22000, "paid_date": "2026-03-03", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-04-03", "due_amount": 22000, "paid_amount": 22000, "paid_date": "2026-04-04", "days_past_due": 1, "status": "late", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-05-03", "due_amount": 22000, "paid_amount": 22000, "paid_date": "2026-05-03", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-06-03", "due_amount": 22000, "paid_amount": 22000, "paid_date": "2026-06-03", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-07-03", "due_amount": 22000, "paid_amount": 22000, "paid_date": "2026-07-03", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false}
+      ],
+      "transactions": [
+        {"date": "2026-04-10", "amount": 90000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-05-10", "amount": 90000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-06-10", "amount": 90000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-07-10", "amount": 90000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-07-08", "amount": 45000, "type": "debit", "category": "expense", "description": "Discretionary spend"}
+      ],
+      "balance_history": [
+        {"date": "2026-05-03", "account_balance": 70000, "credit_limit": 600000, "outstanding_balance": 390000},
+        {"date": "2026-06-03", "account_balance": 55000, "credit_limit": 600000, "outstanding_balance": 465000},
+        {"date": "2026-07-03", "account_balance": 40000, "credit_limit": 600000, "outstanding_balance": 540000}
+      ]
+    },
+    {
+      "borrower_id": "B105",
+      "name": "Karan Desai",
+      "assigned_analyst_id": "A002",
+      "scenario_tag": "reduced_income_inflows",
+      "notes": "Recent income inflows significantly below baseline window.",
+      "loan": {
+        "loan_id": "L105",
+        "loan_amount": 450000,
+        "emi_amount": 16000,
+        "outstanding_balance": 300000,
+        "credit_limit": 450000,
+        "next_due_date": "2026-08-07",
+        "product": "term_loan"
+      },
+      "payments": [
+        {"due_date": "2026-02-07", "due_amount": 16000, "paid_amount": 16000, "paid_date": "2026-02-07", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-03-07", "due_amount": 16000, "paid_amount": 16000, "paid_date": "2026-03-07", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-04-07", "due_amount": 16000, "paid_amount": 16000, "paid_date": "2026-04-07", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-05-07", "due_amount": 16000, "paid_amount": 16000, "paid_date": "2026-05-09", "days_past_due": 2, "status": "late", "channel": "manual", "auto_debit_failed": false},
+        {"due_date": "2026-06-07", "due_amount": 16000, "paid_amount": 16000, "paid_date": "2026-06-12", "days_past_due": 5, "status": "late", "channel": "manual", "auto_debit_failed": false},
+        {"due_date": "2026-07-07", "due_amount": 16000, "paid_amount": 16000, "paid_date": "2026-07-14", "days_past_due": 7, "status": "late", "channel": "manual", "auto_debit_failed": false}
+      ],
+      "transactions": [
+        {"date": "2026-04-01", "amount": 75000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-05-01", "amount": 75000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-06-01", "amount": 72000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-06-20", "amount": 20000, "type": "credit", "category": "income", "description": "Bonus"},
+        {"date": "2026-07-01", "amount": 28000, "type": "credit", "category": "income", "description": "Partial freelance payout"},
+        {"date": "2026-07-12", "amount": 5000, "type": "debit", "category": "expense", "description": "Essentials"}
+      ],
+      "balance_history": [
+        {"date": "2026-05-07", "account_balance": 60000, "credit_limit": 450000, "outstanding_balance": 332000},
+        {"date": "2026-06-07", "account_balance": 48000, "credit_limit": 450000, "outstanding_balance": 316000},
+        {"date": "2026-07-07", "account_balance": 22000, "credit_limit": 450000, "outstanding_balance": 300000}
+      ]
+    },
+    {
+      "borrower_id": "B106",
+      "name": "Divya Joshi",
+      "assigned_analyst_id": "A002",
+      "scenario_tag": "skipped_partial_payments",
+      "notes": "Skipped and partial EMI payments in recent cycles.",
+      "loan": {
+        "loan_id": "L106",
+        "loan_amount": 300000,
+        "emi_amount": 11000,
+        "outstanding_balance": 245000,
+        "credit_limit": 300000,
+        "next_due_date": "2026-08-12",
+        "product": "term_loan"
+      },
+      "payments": [
+        {"due_date": "2026-02-12", "due_amount": 11000, "paid_amount": 11000, "paid_date": "2026-02-12", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-03-12", "due_amount": 11000, "paid_amount": 11000, "paid_date": "2026-03-12", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-04-12", "due_amount": 11000, "paid_amount": 5500, "paid_date": "2026-04-20", "days_past_due": 8, "status": "partial", "channel": "manual", "auto_debit_failed": false},
+        {"due_date": "2026-05-12", "due_amount": 11000, "paid_amount": 0, "paid_date": null, "days_past_due": 64, "status": "skipped", "channel": "unknown", "auto_debit_failed": false},
+        {"due_date": "2026-06-12", "due_amount": 11000, "paid_amount": 6000, "paid_date": "2026-06-25", "days_past_due": 13, "status": "partial", "channel": "manual", "auto_debit_failed": false},
+        {"due_date": "2026-07-12", "due_amount": 11000, "paid_amount": 0, "paid_date": null, "days_past_due": 3, "status": "missed", "channel": "unknown", "auto_debit_failed": true}
+      ],
+      "transactions": [
+        {"date": "2026-04-15", "amount": 40000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-05-15", "amount": 38000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-06-15", "amount": 35000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-07-15", "amount": 20000, "type": "credit", "category": "income", "description": "Partial salary"}
+      ],
+      "balance_history": [
+        {"date": "2026-05-12", "account_balance": 18000, "credit_limit": 300000, "outstanding_balance": 268000},
+        {"date": "2026-06-12", "account_balance": 12000, "credit_limit": 300000, "outstanding_balance": 257000},
+        {"date": "2026-07-12", "account_balance": 4500, "credit_limit": 300000, "outstanding_balance": 245000}
+      ]
+    },
+    {
+      "borrower_id": "B107",
+      "name": "Rohit Verma",
+      "assigned_analyst_id": "A001",
+      "scenario_tag": "declining_account_balance",
+      "notes": "Account balance declining sharply; early stress signal.",
+      "loan": {
+        "loan_id": "L107",
+        "loan_amount": 250000,
+        "emi_amount": 9500,
+        "outstanding_balance": 175000,
+        "credit_limit": 250000,
+        "next_due_date": "2026-08-08",
+        "product": "term_loan"
+      },
+      "payments": [
+        {"due_date": "2026-02-08", "due_amount": 9500, "paid_amount": 9500, "paid_date": "2026-02-08", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-03-08", "due_amount": 9500, "paid_amount": 9500, "paid_date": "2026-03-08", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-04-08", "due_amount": 9500, "paid_amount": 9500, "paid_date": "2026-04-08", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-05-08", "due_amount": 9500, "paid_amount": 9500, "paid_date": "2026-05-08", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-06-08", "due_amount": 9500, "paid_amount": 9500, "paid_date": "2026-06-10", "days_past_due": 2, "status": "late", "channel": "manual", "auto_debit_failed": false},
+        {"due_date": "2026-07-08", "due_amount": 9500, "paid_amount": 9500, "paid_date": "2026-07-11", "days_past_due": 3, "status": "late", "channel": "manual", "auto_debit_failed": false}
+      ],
+      "transactions": [
+        {"date": "2026-04-20", "amount": 50000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-05-20", "amount": 50000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-06-20", "amount": 48000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-07-05", "amount": 35000, "type": "debit", "category": "expense", "description": "Large cash withdrawal"}
+      ],
+      "balance_history": [
+        {"date": "2026-05-08", "account_balance": 78000, "credit_limit": 250000, "outstanding_balance": 194000},
+        {"date": "2026-06-08", "account_balance": 45000, "credit_limit": 250000, "outstanding_balance": 184500},
+        {"date": "2026-07-08", "account_balance": 12000, "credit_limit": 250000, "outstanding_balance": 175000}
+      ]
+    },
+    {
+      "borrower_id": "B108",
+      "name": "Ananya Gupta",
+      "assigned_analyst_id": "A002",
+      "scenario_tag": "missing_payments_data",
+      "notes": "Edge case: loan and balances present but payment history empty.",
+      "loan": {
+        "loan_id": "L108",
+        "loan_amount": 200000,
+        "emi_amount": 7500,
+        "outstanding_balance": 180000,
+        "credit_limit": 200000,
+        "next_due_date": "2026-08-15",
+        "product": "term_loan"
+      },
+      "payments": [],
+      "transactions": [
+        {"date": "2026-06-01", "amount": 40000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-07-01", "amount": 40000, "type": "credit", "category": "income", "description": "Salary"}
+      ],
+      "balance_history": [
+        {"date": "2026-06-15", "account_balance": 25000, "credit_limit": 200000, "outstanding_balance": 187500},
+        {"date": "2026-07-15", "account_balance": 22000, "credit_limit": 200000, "outstanding_balance": 180000}
+      ]
+    },
+    {
+      "borrower_id": "B109",
+      "name": "Siddharth Rao",
+      "assigned_analyst_id": "A001",
+      "scenario_tag": "insufficient_history",
+      "notes": "Edge case: new borrower with fewer payment cycles than min_payment_history_cycles.",
+      "loan": {
+        "loan_id": "L109",
+        "loan_amount": 150000,
+        "emi_amount": 6000,
+        "outstanding_balance": 144000,
+        "credit_limit": 150000,
+        "next_due_date": "2026-08-20",
+        "product": "term_loan"
+      },
+      "payments": [
+        {"due_date": "2026-06-20", "due_amount": 6000, "paid_amount": 6000, "paid_date": "2026-06-20", "days_past_due": 0, "status": "on_time", "channel": "auto_debit", "auto_debit_failed": false},
+        {"due_date": "2026-07-20", "due_amount": 6000, "paid_amount": 0, "paid_date": null, "days_past_due": 0, "status": "on_time", "channel": "unknown", "auto_debit_failed": false}
+      ],
+      "transactions": [
+        {"date": "2026-07-01", "amount": 45000, "type": "credit", "category": "income", "description": "Salary"}
+      ],
+      "balance_history": [
+        {"date": "2026-06-20", "account_balance": 30000, "credit_limit": 150000, "outstanding_balance": 150000},
+        {"date": "2026-07-20", "account_balance": 28000, "credit_limit": 150000, "outstanding_balance": 144000}
+      ]
+    },
+    {
+      "borrower_id": "B110",
+      "name": "Pooja Malhotra",
+      "assigned_analyst_id": "A002",
+      "scenario_tag": "critical_multi_signal",
+      "notes": "Multiple severe signals: high DPD, failed debits, income drop, high utilization, partials.",
+      "loan": {
+        "loan_id": "L110",
+        "loan_amount": 700000,
+        "emi_amount": 28000,
+        "outstanding_balance": 665000,
+        "credit_limit": 700000,
+        "next_due_date": "2026-08-02",
+        "product": "term_loan"
+      },
+      "payments": [
+        {"due_date": "2026-02-02", "due_amount": 28000, "paid_amount": 28000, "paid_date": "2026-02-05", "days_past_due": 3, "status": "late", "channel": "manual", "auto_debit_failed": true},
+        {"due_date": "2026-03-02", "due_amount": 28000, "paid_amount": 14000, "paid_date": "2026-03-20", "days_past_due": 18, "status": "partial", "channel": "manual", "auto_debit_failed": true},
+        {"due_date": "2026-04-02", "due_amount": 28000, "paid_amount": 0, "paid_date": null, "days_past_due": 104, "status": "skipped", "channel": "unknown", "auto_debit_failed": true},
+        {"due_date": "2026-05-02", "due_amount": 28000, "paid_amount": 10000, "paid_date": "2026-05-28", "days_past_due": 26, "status": "partial", "channel": "manual", "auto_debit_failed": true},
+        {"due_date": "2026-06-02", "due_amount": 28000, "paid_amount": 0, "paid_date": null, "days_past_due": 43, "status": "missed", "channel": "unknown", "auto_debit_failed": true},
+        {"due_date": "2026-07-02", "due_amount": 28000, "paid_amount": 5000, "paid_date": "2026-07-25", "days_past_due": 23, "status": "partial", "channel": "manual", "auto_debit_failed": true}
+      ],
+      "transactions": [
+        {"date": "2026-04-05", "amount": 110000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-05-05", "amount": 95000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-06-05", "amount": 90000, "type": "credit", "category": "income", "description": "Salary"},
+        {"date": "2026-07-05", "amount": 25000, "type": "credit", "category": "income", "description": "Reduced income"},
+        {"date": "2026-07-08", "amount": 20000, "type": "debit", "category": "expense", "description": "Urgent expense"}
+      ],
+      "balance_history": [
+        {"date": "2026-05-02", "account_balance": 35000, "credit_limit": 700000, "outstanding_balance": 580000},
+        {"date": "2026-06-02", "account_balance": 12000, "credit_limit": 700000, "outstanding_balance": 630000},
+        {"date": "2026-07-02", "account_balance": 2500, "credit_limit": 700000, "outstanding_balance": 665000}
+      ]
+    }
+  ]
+}
