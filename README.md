@@ -70,10 +70,13 @@ Open [http://localhost:3000](http://localhost:3000) → pick demo user **A001** 
 ## Tests
 
 ```bash
-# Backend — 32 tests
+# Backend — 46 tests
 cd backend && pytest tests -v
 
-# Frontend E2E — 4 tests (requires both servers running)
+# Frontend unit tests — Vitest
+cd frontend && npm run test
+
+# Frontend E2E — 4 smoke tests (Playwright starts servers, or use PLAYWRIGHT_SKIP_WEBSERVER=1)
 cd frontend && npm install && npx playwright install chromium && npm run test:e2e
 ```
 
@@ -97,7 +100,7 @@ cd frontend && npm install && npx playwright install chromium && npm run test:e2
 | Scoring | Deterministic rule engine |
 | LLM | Anthropic wrapper (explanation + Q&A only) |
 | Storage | JSON file (`StorageBackend` abstraction) |
-| Tests | pytest (32) + Playwright E2E (4) |
+| Tests | pytest (46) + Vitest (11) + Playwright E2E (4) |
 
 ## Features
 

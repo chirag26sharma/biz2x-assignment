@@ -45,12 +45,17 @@ Protected routes: `middleware.ts` (cookie) + client-side role redirects.
 ## Tests
 
 ```bash
-# E2E (backend + frontend must be running)
+# Unit + component tests (Vitest)
+npm run test
+
+# E2E smoke tests (Playwright auto-starts servers, or set PLAYWRIGHT_SKIP_WEBSERVER=1)
 npm run test:e2e
 
-# Interactive debug
+# Interactive E2E debug
 npm run test:e2e:ui
 ```
+
+**Coverage:** `lib/stream.ts` (SSE + 429 fallback), `lib/styles.ts`, `DpdTrendChart` component.
 
 ## Docker
 

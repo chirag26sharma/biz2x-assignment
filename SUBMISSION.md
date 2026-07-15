@@ -20,7 +20,8 @@ Use this before submitting your assignment to Biz2X.
 ## Tests
 
 - [ ] `cd backend && pytest tests -v` — **46 passed**
-- [ ] `cd frontend && npm run test:e2e` — **4 passed** (with both servers running)
+- [ ] `cd frontend && npm run test` — **11 passed** (Vitest unit/component)
+- [ ] `cd frontend && npm run test:e2e` — **4 passed** (Playwright smoke; auto-starts servers in CI)
 
 ## Documentation
 
@@ -58,7 +59,7 @@ Quick start: see GETTING_STARTED.md
 Demo script: see DEMO.md
 
 Stack: FastAPI + Next.js TypeScript
-Tests: 32 backend pytest + 4 Playwright E2E
+Tests: 46 backend pytest + 11 Vitest + 4 Playwright E2E
 
 Demo users: A001 (analyst), A002 (analyst), U_B101 (borrower)
 Showcase: B110 (Critical) vs B101 (Low)
