@@ -68,8 +68,8 @@ pytest tests -v
 
 ## Simulated authentication & RBAC
 
-Login via `POST /api/auth/login` with `{ "user_id": "A001" }` returns `{ user, token }`.  
-Send `Authorization: Bearer <token>` (or `X-User-Id` header for tooling).
+Login via `POST /api/auth/login` with `{ "user_id": "A001" }` returns a signed JWT.  
+Send `Authorization: Bearer <token>`.
 
 | Role | Access |
 |------|--------|

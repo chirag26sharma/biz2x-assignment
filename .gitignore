@@ -1,0 +1,30 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+.next/
+out/
+build/
+
+# Secrets
+.env
+.env.local
+backend/.env
+frontend/.env.local
+
+# Keep examples
+!.env.example
+!backend/.env.example
+!frontend/.env.example
